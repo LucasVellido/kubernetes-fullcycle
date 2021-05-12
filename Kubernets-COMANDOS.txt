@@ -1,0 +1,133 @@
+-> Acessar a API do Kubernets:
+    - kubectl proxy --port 8080
+
+-> Criar um cluster
+    - kind create cluster
+
+-> Mudar o contexto do cluster que quero conectar
+    - kubectl cluster-info --context kind-kind
+
+-> Listar os clusters
+    - kind get clusters
+
+-> Deletar cluster
+    - kind delete clusters NOME_DO_CLUSTER
+
+-> Criar um cluster com mais de um node:
+    - Criar um arquivo yaml com esse conf:
+    kind: Cluster
+    apiVersion: kind.x-k8s.io/v1alpha4
+    nodes:
+    - role: control-plane
+    - role: worker
+    - role: worker
+    - role: worker
+    - Rodar o seguinte comando:
+        - kind create cluster --config k8s/kind.yaml --name fullcycle
+
+-> Listar os nodes
+    - kubectl get nodes
+
+-> Criar o Pod apartir do arquivo yaml:
+    - kubectl apply -f k8s/NOME_DO_ARQUIVO.yaml
+
+-> Lister meus Pods
+    - kubectl get pods
+
+-> Deletar pod
+    - kubectl delete pod NOME_POD
+
+-> Criar um mecanismo de rede para acessar o Pod
+    - kubectl port-forward pod/NOME_POD 8080:8080
+
+-> Mostar infos do Pod
+    - kubectl describe pod NOME_POD
+
+-> Mostar Logs do Pod
+    - kubectl logs NOME_POD
+
+-> Listar replicaset
+    - kubectl get replicaset
+
+-> Deletar replicaset
+    - kubectl delete replicaset NOME_REPLICASET
+
+-> Deleter deployment
+    - kubectl delete deploy NOME_DEPLOYMENT
+
+-> Diff de deployment de replicaset
+    - O deployment mata os pods e sobe outro qnd atualizamos a versão da img
+
+-> Listar as reviões para fazer rollback:
+    - kubectl rollout history deployment NOME_DEPLOYMENT
+
+-> Dar rollback no deployment:
+    - kubectl rollout undo deployment NOME_DEPLOYMENT (volta para versão antarior)
+    - kubectl rollout undo deployment --to-revision NUMERO DA REVISÂO (Volta para resisão especifica)
+
+-> Criar um Service
+    - kubectl apply -f k8s/NOME_DO_SERVICE.yaml
+    - Tipo de service 
+        - ClusterIP (Ip interno do servidor)
+        - NodePort (Expoem a porta para qqr um dos nodes, usar porta entre 30000> <32767) se não definir ele gera uma automatica
+        - LoadBalancer (Gera um IP para utilizar a aplicação de fora)
+-> Listar os service
+    - kubectl get services (OU "svc")
+
+-> Liberar uma porta de acesso atraves do service
+    - kubectl port-forward svc/NOME_SERVICE (porta-local)8000:8080(porta-pod)
+
+-> Verifica se a aplicação está Onlline (saudavel), se não ele da restart no container
+    - livenessProbe
+,
+-> Verifica se a aplicação está pronta para ser usada, se bão ela tira do trafego
+    - readinessProbe
+
+-> Verifica se aplicação está pronta para ser usada e liberar o liveness e readiness
+    - startupProbe
+
+-> Install metrics-server kind
+    - Repositorio do metrics-server:
+        https://github.com/kubernetes-sigs/metrics-server
+    - Link para baixar o yaml:
+        wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+    - No components.yaml em kind: Deployment add o args:
+        - --kubelet-insecure-tls
+
+    - Verificar se a instalação de certo basta rodar o comando a baixo e esse serviço tem que estar tru "v1beta1.metrics.k8s.io" "kube-system/metrics-server"
+        kubectl get apiservices
+
+-> Definir minimo e maximo de cpu e memoria
+  resources:
+    # Minimo para app rodar
+    requests: 
+        cpu: 100m
+        memory: 20Mi
+    # Maximo de recursos que o app pode usar 
+    limits:
+        cpu: 500m
+        memory: 25Mi
+
+-> Verificar memoria usada pelo pod:
+    kubectl top pod NOME_POD
+
+-> Verificar infos do HPA
+    - kubectl get hpa
+
+-> Ferramentas para testes de stress:
+    - k6
+    - fortio
+
+-> Verificar storageClass
+    - kubectl ger storageclass
+
+
+-> Criar namespace
+    - kubectl create ns NOME_NAMESPACE
+
+-> Listar namespace
+    -kubectl get ns
+
+-> Subir um deployment em um determinado namespace
+    -kubectl apply -f nome_arq.yaml -n=NOME_NAMESPACE
+    - Da para colocar no namespace na spec do yaml

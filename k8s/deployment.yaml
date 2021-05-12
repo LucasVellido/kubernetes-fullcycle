@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goserver
+  labels:
+    app: goserver
+spec:
+  selector:
+    matchLabels:
+      app: goserver    
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "goserver"
+    spec:
+      containers:
+        - name: goserver
+          image: "lucasvellido/hello-go:v9.6"
+
+          resources:
+            # Minimo para app rodar
+            requests: 
+              cpu: 100m
+              memory: 20Mi
+            # Maximo de recursos que o app pode usar 
+            limits:
+              cpu: 500m
+              memory: 25Mi
+
+          # livenessProbe:
+          #   httpGet:
+          #     path: /healthz
+          #     port: 8000
+          #   periodSeconds: 5
+          #   failureThreshold: 1
+          #   timeoutSeconds: 1
+          #   successThreshold: 1
+            # initialDelaySeconds: 15
+          # Definindo variaveis de ambiente em um arquivo de conf
+          # A diff do de baixo que aqui ele coloca todas da env do arquivo com variaveis
+          # envFrom:
+          #   - configMapRef:
+          #       name: goserver-env
+
+          # volumeMounts:
+          #   - mountPath: "/go/myfamily"
+          #     name: config
+          #     readOnly: true
+
+      # volumes:
+        # - name: goserver-volume
+        #   persistentVolumeClaim:
+        #     claimName: goserver-pvc
+
+        # - name: config
+        #   configMap:
+        #     name: configmap-family
+        #     items:
+        #     - key: members
+        #       path: "family.txt"  
+
+          # Definindo variaveis de ambiente em um arquivo de conf
+          # env:
+          #   - name: NAME
+          #     valueFrom: 
+          #       configMapKeyRef:
+          #         name: goserver-env
+          #         key: NAME
+
+          #   - name: AGE
+          #     valueFrom: 
+          #       configMapKeyRef:
+          #         name: goserver-env
+          #         key: AGE
+                
+          # Definindo variaveis de ambiente para usar na app hardcode
+          # env:
+          #   - name: NAME
+          #     value: "Lucas Vellido"
+          #   - name: AGE
+          #     value: "27"

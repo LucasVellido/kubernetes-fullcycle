@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: goserver-service
+spec:
+  selector:
+    app: goserver
+  type: ClusterIP
+  ports:
+  - name: goserver-service
+    port: 8080
+    # Esse cara serve para falar a porta do meu Pod(container)
+    # Se não colocar ele vai pergar a porta do 'port'
+    # targetPort: 8000
+    protocol: TCP
+    # nodePort: 30001 (se não definir ele gera uma automatica)

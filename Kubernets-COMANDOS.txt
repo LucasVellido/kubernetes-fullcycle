@@ -121,7 +121,6 @@
 -> Verificar storageClass
     - kubectl ger storageclass
 
-
 -> Criar namespace
     - kubectl create ns NOME_NAMESPACE
 
